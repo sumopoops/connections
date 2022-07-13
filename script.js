@@ -3,7 +3,8 @@
 const canvas = document.getElementById("c");
 const ctx = canvas.getContext("2d");
 const stats = document.getElementById("stats");
-let maxNodes = 100;
+// Node count based on size of screen area
+let maxNodes = (window.innerWidth*window.innerHeight) / 5000;
 let nodes = [];
 let jiggle = 1;
 
