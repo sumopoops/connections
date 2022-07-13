@@ -1,3 +1,14 @@
+/*
+
+Color Theme
+
+#2176cc  Blue
+#ff7d6e  Pink
+#fca6ac  Light Pink
+#e8e7cb  Yellow
+
+*/
+
 body {
     border: 0px;
     margin: 0px;
@@ -11,7 +22,8 @@ canvas {
 }
 
 #stats {
-    width: 400px;
+    /*display: none;*/
+    width: 300px;
     background-color: rgba(33, 33, 33, 0.95);
     z-index: 3;
     position: fixed;
@@ -21,6 +33,6 @@ canvas {
     padding: 30px 30px 30px 60px;
     color: white;
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-    font-size: 50px;
+    font-size: 30px;
     font-weight: bolder;
 }

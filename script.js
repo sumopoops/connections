@@ -19,8 +19,8 @@ function CreateNode() {
     let node = {
         x: RN(0, canvas.width),
         y: RN(0, canvas.height),
-        size: RN(10, 100),
-        color: Math.round(Math.random())
+        size: RN(10, 30),
+        color: Math.round(Math.random())    
     };
     nodes.push(node);
 }
@@ -40,8 +40,8 @@ function keyPressed(e) {
         case "ArrowLeft":
             if (jiggle > 1) jiggle--;
             break;
-        case "ArrowRight":
-            jiggle++;
+            case "ArrowRight":
+                jiggle++;
             break;
     }
 }
@@ -54,6 +54,19 @@ function loop() {
     
     ClearCanvas();
     
+    // Loop over nodes to draw lines underneath
+    for (i=0; i<nodes.length; i++) {
+        if (i % 10 == 0) {
+            if (!nodes[i+1]) break;
+            ctx.strokeStyle = "#e8e7cb";
+            ctx.lineWidth = 10;
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[i+1].x, nodes[i+1].y);
+            ctx.stroke();
+        }
+    }
+
     // Loop over nodes
     for (i=0; i<nodes.length; i++) {
 
@@ -61,7 +74,8 @@ function loop() {
         nodes[i].x += (Math.random()-0.5) * jiggle;
         nodes[i].y += (Math.random()-0.5) * jiggle;
         if (i % 6 == 0) {
-            // Do something every 6 iterations
+            nodes[i].x += RN(-2, 2);
+            nodes[i].y += RN(-2, 2);
         }
 
         // Draw Circles
@@ -72,9 +86,10 @@ function loop() {
 
         // Update Stats
         stats.innerHTML =   "<span style='color: #ff7d6e'>COUNT&nbsp;&nbsp;</span>" + nodes.length + "<br>" +
-                            "<span style='color: #ff7d6e'>JIGGLE&nbsp;&nbsp;</span>" + jiggle + "<br>";
-
+        "<span style='color: #ff7d6e'>JIGGLE&nbsp;&nbsp;</span>" + jiggle + "<br>";
+        
     }
+    
 
     // Update node count on screen
     while (nodes.length < maxNodes) CreateNode();
