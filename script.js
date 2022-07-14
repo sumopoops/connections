@@ -9,6 +9,7 @@ let nodes = [];
 let jiggle = 4;
 let hue = 30;
 let lineDrawProx = 80;
+let showStats = false;
 
 
 
@@ -48,6 +49,9 @@ function keyPressed(e) {
         case "a":
             lineDrawProx--;
             break;
+        case "d":
+            showStats = !showStats;
+            (showStats) ? stats.style.visibility = "visible" : stats.style.visibility = "hidden";
     }
 }
 
@@ -97,11 +101,17 @@ function loop() {
     // Second loop over nodes
     for (i=0; i<nodes.length; i++) {
 
+        let n = nodes[i];
+
         // Draw Circles
         ctx.beginPath();
-        nodes[i].color ? ctx.fillStyle = "#ff7d6e" : ctx.fillStyle = "#fca6ac";
-        ctx.arc(nodes[i].x, nodes[i].y, nodes[i].size, 0, 2*Math.PI);
+        n.color ? ctx.fillStyle = "#ff7d6e" : ctx.fillStyle = "#fca6ac";
+        ctx.arc(n.x, n.y, n.size, 0, 2*Math.PI);
         ctx.fill();
+
+        // Check for out of bounds nodes and delete
+        if (n.x < -100 || n.x > canvas.width+100 || n.y < -100 || n.y > canvas.height+100)
+        nodes.splice(i, 1);
 
     }
     
@@ -111,7 +121,7 @@ function loop() {
                         "<span style='color: #ff7d6e'>PROXIMITY&nbsp;&nbsp;</span>" + proximityChecks + "<br>" +
                         "<span style='color: #ff7d6e'>LINES DRAWN&nbsp;&nbsp;</span>" + linesDrawn + "<br>" +
                         "<span style='color: #ff7d6e'>DRAW PROX&nbsp;&nbsp;</span>" + lineDrawProx + "<br>";
-
+    
     // Keep array filled with max node amount
     while (nodes.length < maxNodes) CreateNode();
     while (nodes.length > maxNodes) nodes.pop();

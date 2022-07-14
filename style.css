@@ -22,7 +22,7 @@ canvas {
 }
 
 #stats {
-    /*display: none;*/
+    visibility: hidden;
     width: 300px;
     background-color: rgba(33, 33, 33, 0.95);
     z-index: 3;
