@@ -6,8 +6,9 @@ const stats = document.getElementById("stats");
 // Node count based on size of screen area
 let maxNodes = (window.innerWidth*window.innerHeight) / 5000;
 let nodes = [];
-let jiggle = 1;
+let jiggle = 4;
 let hue = 30;
+let lineDrawProx = 80;
 
 
 
@@ -38,8 +39,14 @@ function keyPressed(e) {
         case "ArrowLeft":
             if (jiggle > 1) jiggle--;
             break;
-            case "ArrowRight":
-                jiggle++;
+        case "ArrowRight":
+            jiggle++;
+            break;
+        case "q":
+            lineDrawProx++
+            break;
+        case "a":
+            lineDrawProx--;
             break;
     }
 }
@@ -53,20 +60,11 @@ function loop() {
     // Clear canvas
     ctx.reset();
     
-    // Loop over nodes to draw lines underneath
-    for (i=0; i<nodes.length; i++) {
-        if (!nodes[i+1]) break;
-        if (i % 12 == 0) {
-            ctx.strokeStyle = "#61a3e5";
-            ctx.lineWidth = 10;
-            ctx.beginPath();
-            ctx.moveTo(nodes[i].x, nodes[i].y);
-            ctx.lineTo(nodes[i+1].x, nodes[i+1].y);
-            ctx.stroke();
-        }
-    }
-
-    // Loop over nodes
+    // Stats
+    let linesDrawn = 0;
+    let proximityChecks = 0;
+    
+    // First loop over nodes (Move + draw lines)
     for (i=0; i<nodes.length; i++) {
 
         // Move
@@ -77,24 +75,49 @@ function loop() {
             nodes[i].y += RN(-2, 3);
         }
 
+        // Check proximity and draw connecting lines
+        for (n=0; n<nodes.length; n++) {
+            proximityChecks++;
+            let a = nodes[i];
+            let b = nodes[n];
+            if (n == i) break;
+            if (Math.abs(a.x - b.x) < lineDrawProx && Math.abs(a.y - b.y) < lineDrawProx) {
+                linesDrawn++;
+                ctx.strokeStyle = "#61a3e5";
+                ctx.lineWidth = 10;
+                ctx.beginPath();
+                ctx.moveTo(a.x, a.y);
+                ctx.lineTo(b.x, b.y);
+                ctx.stroke();
+            }
+        }
+
+    }
+
+    // Second loop over nodes
+    for (i=0; i<nodes.length; i++) {
+
         // Draw Circles
         ctx.beginPath();
         nodes[i].color ? ctx.fillStyle = "#ff7d6e" : ctx.fillStyle = "#fca6ac";
         ctx.arc(nodes[i].x, nodes[i].y, nodes[i].size, 0, 2*Math.PI);
         ctx.fill();
 
-        // Update Stats
-        stats.innerHTML =   "<span style='color: #ff7d6e'>COUNT&nbsp;&nbsp;</span>" + nodes.length + "<br>" +
-        "<span style='color: #ff7d6e'>JIGGLE&nbsp;&nbsp;</span>" + jiggle + "<br>";
-        
     }
+    
+    // Update Stats
+    stats.innerHTML =   "<span style='color: #ff7d6e'>COUNT&nbsp;&nbsp;</span>" + nodes.length + "<br>" +
+                        "<span style='color: #ff7d6e'>JIGGLE&nbsp;&nbsp;</span>" + jiggle + "<br>" +
+                        "<span style='color: #ff7d6e'>PROXIMITY&nbsp;&nbsp;</span>" + proximityChecks + "<br>" +
+                        "<span style='color: #ff7d6e'>LINES DRAWN&nbsp;&nbsp;</span>" + linesDrawn + "<br>" +
+                        "<span style='color: #ff7d6e'>DRAW PROX&nbsp;&nbsp;</span>" + lineDrawProx + "<br>";
 
-    // Update node count on screen
+    // Keep array filled with max node amount
     while (nodes.length < maxNodes) CreateNode();
     while (nodes.length > maxNodes) nodes.pop();
 
     requestAnimationFrame(loop);
-
+    
 }
 
 function main() {
