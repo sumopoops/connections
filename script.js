@@ -60,6 +60,9 @@ function keyPressed(e) {
 //---------------------------------------------------------------------------- MAIN / LOOP
 
 function loop() {
+
+    // FPS counter
+    let dt1 = performance.now();
     
     // Clear canvas
     ctx.reset();
@@ -115,17 +118,21 @@ function loop() {
 
     }
     
-    // Update Stats
-    stats.innerHTML =   "<span style='color: #ff7d6e'>COUNT&nbsp;&nbsp;</span>" + nodes.length + "<br>" +
-                        "<span style='color: #ff7d6e'>JIGGLE&nbsp;&nbsp;</span>" + jiggle + "<br>" +
-                        "<span style='color: #ff7d6e'>PROXIMITY&nbsp;&nbsp;</span>" + proximityChecks + "<br>" +
-                        "<span style='color: #ff7d6e'>LINES DRAWN&nbsp;&nbsp;</span>" + linesDrawn + "<br>" +
-                        "<span style='color: #ff7d6e'>DRAW PROX&nbsp;&nbsp;</span>" + lineDrawProx + "<br>";
-    
     // Keep array filled with max node amount
     while (nodes.length < maxNodes) CreateNode();
     while (nodes.length > maxNodes) nodes.pop();
+    
+    let dt2 = performance.now();
 
+    // Update Stats
+    stats.innerHTML = 
+        "<span style='color: #ff7d6e'>COUNT&nbsp;&nbsp;</span>" + nodes.length + "<br>" +
+        "<span style='color: #ff7d6e'>JIGGLE&nbsp;&nbsp;</span>" + jiggle + "<br>" +
+        "<span style='color: #ff7d6e'>PROXIMITY&nbsp;&nbsp;</span>" + proximityChecks + "<br>" +
+        "<span style='color: #ff7d6e'>LINES DRAWN&nbsp;&nbsp;</span>" + linesDrawn + "<br>" +
+        "<span style='color: #ff7d6e'>DRAW PROX&nbsp;&nbsp;</span>" + lineDrawProx + "<br>" +
+        "<span style='color: #ff7d6e'>FPS&nbsp;&nbsp;</span>" + Math.round(1000/(dt2 - dt1)) + "<br>";
+    
     requestAnimationFrame(loop);
     
 }
