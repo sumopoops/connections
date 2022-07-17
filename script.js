@@ -3,11 +3,11 @@
 const canvas = document.getElementById("c");
 const ctx = canvas.getContext("2d");
 const stats = document.getElementById("stats");
-// Node count based on size of screen area
+const mainHTML = document.getElementById("main");
 let maxNodes = (window.innerWidth*window.innerHeight) / 5000;
 let nodes = [];
 let jiggle = 4;
-let hue = 30;
+let hue = 0;
 let lineDrawProx = 80;
 let showStats = false;
 
@@ -47,12 +47,22 @@ function keyPressed(e) {
             lineDrawProx++
             break;
         case "a":
-            lineDrawProx--;
+            if (lineDrawProx > 1) lineDrawProx--;
             break;
         case "d":
             showStats = !showStats;
             (showStats) ? stats.style.visibility = "visible" : stats.style.visibility = "hidden";
+        case "w":
+            if (hue < 360) hue++;
+            break;
+        case "s":
+            if (hue > 1) hue--;
+            break;
     }
+}
+
+function writeStat(statName, value) {
+    stats.innerHTML += "<span style='color: #ff7d6e'>" + statName + "&nbsp;&nbsp;</span>" + value + "<br>";
 }
 
 
@@ -61,15 +71,13 @@ function keyPressed(e) {
 
 function loop() {
 
-    // FPS counter
+    // Stats
     let dt1 = performance.now();
+    let linesDrawn = 0;
+    let proximityChecks = 0;
     
     // Clear canvas
     ctx.reset();
-    
-    // Stats
-    let linesDrawn = 0;
-    let proximityChecks = 0;
     
     // First loop over nodes (Move + draw lines)
     for (i=0; i<nodes.length; i++) {
@@ -122,16 +130,18 @@ function loop() {
     while (nodes.length < maxNodes) CreateNode();
     while (nodes.length > maxNodes) nodes.pop();
     
+    mainHTML.style.filter = "hue-rotate(" + hue + "deg)";
     let dt2 = performance.now();
-
-    // Update Stats
-    stats.innerHTML = 
-        "<span style='color: #ff7d6e'>COUNT&nbsp;&nbsp;</span>" + nodes.length + "<br>" +
-        "<span style='color: #ff7d6e'>JIGGLE&nbsp;&nbsp;</span>" + jiggle + "<br>" +
-        "<span style='color: #ff7d6e'>PROXIMITY&nbsp;&nbsp;</span>" + proximityChecks + "<br>" +
-        "<span style='color: #ff7d6e'>LINES DRAWN&nbsp;&nbsp;</span>" + linesDrawn + "<br>" +
-        "<span style='color: #ff7d6e'>DRAW PROX&nbsp;&nbsp;</span>" + lineDrawProx + "<br>" +
-        "<span style='color: #ff7d6e'>FPS&nbsp;&nbsp;</span>" + Math.round(1000/(dt2 - dt1)) + "<br>";
+    
+    // Display stats
+    stats.innerHTML = "";
+    writeStat("COUNT", nodes.length);
+    writeStat("JIGGLE", jiggle);
+    writeStat("PROXIMITY", proximityChecks);
+    writeStat("LINES DRAWN", linesDrawn);
+    writeStat("DRAW PROX", lineDrawProx);
+    writeStat("HUE", hue);
+    writeStat("FPS", Math.round(1000/(dt2 - dt1)));
     
     requestAnimationFrame(loop);
     
