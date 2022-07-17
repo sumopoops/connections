@@ -62,10 +62,6 @@ function keyPressed(e) {
     }
 }
 
-function writeStat(statName, value) {
-    stats.innerHTML += "<span style='color: #ff7d6e'>" + statName + "&nbsp;&nbsp;</span>" + value + "<br>";
-}
-
 
 
 //---------------------------------------------------------------------------- MAIN / LOOP
@@ -135,14 +131,13 @@ function loop() {
     let dt2 = performance.now();
     
     // Display stats
-    stats.innerHTML = "";
-    writeStat("COUNT", nodes.length);
-    writeStat("JIGGLE", jiggle);
-    writeStat("PROXIMITY", proximityChecks);
-    writeStat("LINES DRAWN", linesDrawn);
-    writeStat("DRAW PROX", lineDrawProx);
-    writeStat("HUE", hue);
-    writeStat("FPS", Math.round(1000/(dt2 - dt1)));
+    stats.innerHTML =   "<b>COUNT </b>" + nodes.length + "<br>" +
+                        "<b>JIGGLE </b>" + jiggle + "<br>" +
+                        "<b>PROXIMITY </b>" + proximityChecks + "<br>" +
+                        "<b>LINES DRAWN </b>" + linesDrawn + "<br>" +
+                        "<b>DRAW PROX </b>" + lineDrawProx + "<br>" +
+                        "<b>HUE </b>" + hue + "<br>" +
+                        "<b>FPS </b>" + Math.round(1000/(dt2 - dt1)) + "<br>";
     
     requestAnimationFrame(loop);
     
