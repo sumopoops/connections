@@ -44,7 +44,7 @@ function keyPressed(e) {
             jiggle++;
             break;
         case "q":
-            lineDrawProx++
+            lineDrawProx++;
             break;
         case "a":
             if (lineDrawProx > 1) lineDrawProx--;
@@ -52,6 +52,7 @@ function keyPressed(e) {
         case "d":
             showStats = !showStats;
             (showStats) ? stats.style.visibility = "visible" : stats.style.visibility = "hidden";
+            break;
         case "w":
             if (hue < 360) hue++;
             break;
