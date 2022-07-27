@@ -2,12 +2,14 @@
 
 const canvas = document.getElementById("c");
 const ctx = canvas.getContext("2d");
+const stats = document.getElementById("stats");
 const mainHTML = document.getElementById("main");
 let maxNodes = (window.innerWidth*window.innerHeight) / 5000;
 let nodes = [];
 let jiggle = 4;
 let hue = 0;
 let lineDrawProx = 80;
+let showStats = false;
 
 
 
@@ -27,6 +29,39 @@ function RN(min, max) {
 	return (Math.floor(Math.random() * (max-min)) + min);
 }
 
+function keyPressed(e) {
+    switch (e.key) {
+        case "ArrowUp":
+            maxNodes++;
+            break;
+        case "ArrowDown":
+            if (maxNodes > 1) maxNodes--;
+            break;
+        case "ArrowLeft":
+            if (jiggle > 1) jiggle--;
+            break;
+        case "ArrowRight":
+            jiggle++;
+            break;
+        case "q":
+            lineDrawProx++;
+            break;
+        case "a":
+            if (lineDrawProx > 1) lineDrawProx--;
+            break;
+        case "d":
+            showStats = !showStats;
+            (showStats) ? stats.style.visibility = "visible" : stats.style.visibility = "hidden";
+            break;
+        case "w":
+            if (hue < 360) hue++;
+            break;
+        case "s":
+            if (hue > 1) hue--;
+            break;
+    }
+}
+
 
 
 //---------------------------------------------------------------------------- MAIN / LOOP
@@ -34,6 +69,7 @@ function RN(min, max) {
 function loop() {
 
     // Stats
+    let dt1 = performance.now();
     let linesDrawn = 0;
     let proximityChecks = 0;
     
@@ -92,6 +128,16 @@ function loop() {
     while (nodes.length > maxNodes) nodes.pop();
     
     mainHTML.style.filter = "hue-rotate(" + hue + "deg)";
+    let dt2 = performance.now();
+    
+    // Display stats
+    stats.innerHTML =   "<b>COUNT </b>" + nodes.length + "<br>" +
+                        "<b>JIGGLE </b>" + jiggle + "<br>" +
+                        "<b>PROXIMITY </b>" + proximityChecks + "<br>" +
+                        "<b>LINES DRAWN </b>" + linesDrawn + "<br>" +
+                        "<b>DRAW PROX </b>" + lineDrawProx + "<br>" +
+                        "<b>HUE </b>" + hue + "<br>" +
+                        "<b>FPS </b>" + Math.round(1000/(dt2 - dt1)) + "<br>";
     
     requestAnimationFrame(loop);
     
@@ -101,6 +147,9 @@ function main() {
 
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+
+    // Keyboard input
+    document.addEventListener("keydown", keyPressed);
 
     requestAnimationFrame(loop);
 
